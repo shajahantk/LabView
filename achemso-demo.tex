@@ -13,7 +13,7 @@
 %% servers.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
-
+\usepackage{todonotes}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% If issues arise when submitting your manuscript, you may want to
 %% un-comment the next line.  This provides information on the
@@ -316,8 +316,48 @@ fields.  Our virtual platform is designed to be
 intuitive and easy to use, allowing users to adjust the required
 parameters, generate voltage signals, monitor wave dynamics, and save
 images to a computer for future analysis, all at the same time.
-The program contains two parts: the first part aquire images,
-and the second part is used to deliver electric field.
+The front panel of the LabVIEW program is shown in Figure
+\ref{fig:ex3}.
+The part 1 triggers camera and capture images at the desired frame rate.
+In our experiment, frame rate is set as 2 fps. 
+\begin{figure}[H]
+    \centering
+\includegraphics[width=\linewidth,height=0.6\linewidth]{Dc_frntpnl - Copy.png}
+    \caption{The front panel of the LabVIEW program for image capture
+      and DC voltage generation. Part I of the front panel is for
+      image acquisition before the DC voltage generation and part II
+      is for image acquisition after the DC voltage generation}
+    \label{fig:ex3}
+\end{figure}
+
+\todo[inline]{Write how camera is triggered}
+
+The corresponding block diagram is shown in Figure \ref{fig:ex4}. 
+The 'IMAQdx open camera' opens the camera. We use the
+‘IMAQdx property node’ to select trigger parameters displayed on the
+front panel. Using ‘DAQmx create channel (CO
+Pulse-generation-Frequency) VI,’ we can choose the Counter channel,
+frequency, and duty cycle of the trigger. The ‘DAQmx Start Task VI’
+starts the signal generation task.  The ‘DAQmx is task done VI’ on the
+while loop checks whether the signal generation task is completed or
+not in each iteration. The ‘DAQmx configure Grab VI’ configures and
+starts the grab acquisition. The ‘IMAQdx Grab VI’ captures the current
+image and then passes the images to ‘IMAQ Cast image VI’ to convert
+these RGB frames to grayscale since this reduces the data size. Each
+image from IMAQ Caste Image VI needs to be written and stored in a
+folder inside the computer to collect raw image data. The ‘IMAQ write
+file2 VI’ writes the image to a file in the selected format
+(png/jpg/bmp/tiff etc.). The iteration terminal of the while loop
+gives the sequential names for images. Each iteration number is
+converted to a string and concatenated with the file extension and
+folder path where we need to store images. The ‘String to Path
+function’ converts these concatenated strings to a path and is
+connected to the “file path” terminal of the 'IMAQ Write file 2
+VI'. This connection commands the 'IMAQ Write file 2 VI' to store the
+images in the mentioned folder with the specified file extension. The
+‘While loop’ helps to run the code continuously.
+
+
 \subsubsection{DC Voltage Signal generation}
 \subsubsection{Electronic Circuit for voltage and current amplification}
 The NI USB DAQ 6343 generates a DC voltage with user-defined
@@ -335,18 +375,8 @@ electrodes
       voltage application in the BZ reaction}
     \label{fig:ex2}
 \end{figure}
-\subsubsection{Front Panel}
-The front panel of the LabVIEW program is shown in Figure
-\ref{fig:ex3} and this is to monitor the real-time system status.
-\begin{figure}[H]
-    \centering
-\includegraphics[width=\linewidth,height=0.6\linewidth]{Dc_frntpnl - Copy.png}
-    \caption{The front panel of the LabVIEW program for image capture
-      and DC voltage generation. Part I of the front panel is for
-      image acquisition before the DC voltage generation and part II
-      is for image acquisition after the DC voltage generation}
-    \label{fig:ex3}
-\end{figure}
+
+
 The image acquisition is controlled using a counter-output trigger
 from DAQ 6343. There are four counter-output channels in DAQ 6343. We
 use channel ‘counter 0’ to trigger the camera. The front panel is
@@ -374,29 +404,7 @@ for image acquisition and DC voltage generation. The block diagram is
 divided into Block I and Block II. Block I corresponds to part I, and
 block II corresponds to part II of the front panel. Each block is
 included in a sequence structure that helps execute the blocks
-sequentially. The 'IMAQdx open camera' opens the camera. We use the
-‘IMAQdx property node’ to select trigger parameters displayed on the
-front panel. Using ‘DAQmx create channel (CO
-Pulse-generation-Frequency) VI,’ we can choose the Counter channel,
-frequency, and duty cycle of the trigger. The ‘DAQmx Start Task VI’
-starts the signal generation task.  The ‘DAQmx is task done VI’ on the
-while loop checks whether the signal generation task is completed or
-not in each iteration. The ‘DAQmx configure Grab VI’ configures and
-starts the grab acquisition. The ‘IMAQdx Grab VI’ captures the current
-image and then passes the images to ‘IMAQ Cast image VI’ to convert
-these RGB frames to grayscale since this reduces the data size. Each
-image from IMAQ Caste Image VI needs to be written and stored in a
-folder inside the computer to collect raw image data. The ‘IMAQ write
-file2 VI’ writes the image to a file in the selected format
-(png/jpg/bmp/tiff etc.). The iteration terminal of the while loop
-gives the sequential names for images. Each iteration number is
-converted to a string and concatenated with the file extension and
-folder path where we need to store images. The ‘String to Path
-function’ converts these concatenated strings to a path and is
-connected to the “file path” terminal of the 'IMAQ Write file 2
-VI'. This connection commands the 'IMAQ Write file 2 VI' to store the
-images in the mentioned folder with the specified file extension. The
-‘While loop’ helps to run the code continuously.
+sequentially. 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.3\linewidth,angle=90 ]{BLOCK1.png}
