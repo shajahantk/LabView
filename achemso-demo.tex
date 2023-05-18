@@ -14,6 +14,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
 \usepackage{todonotes}
+\mciteErrorOnUnknownfalse
+\usepackage{babel}
+\setlength{\marginparwidth}{2cm}
+\usepackage{xcolor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% If issues arise when submitting your manuscript, you may want to
 %% un-comment the next line.  This provides information on the
@@ -113,8 +117,7 @@ separate page at the end of the document.
 \begin{abstract}
 %This study is related to the instrumentation part of the experiments in Belousov-Zhabotinsky (BZ) reaction. 
 We report simultaneous recording and delivering electrical stimuli
-during the image acquisition of the experiments in the
-Belousov-Zhabotinsky (BZ) reaction. The excitation wave formation,
+during the image acquisition of the experiments in the Belousov-Zhabotinsky (BZ) reaction. The excitation wave formation,
 pinning, and unpinning in the BZ reaction is an important topic in the
 field of nonlinear dynamics because of its similarity and scope of
 applicability in biological systems. Unpinning studies in the BZ
@@ -139,11 +142,10 @@ amoeba \cite{tan2020topological}, the chicken retina
 \cite{yu2012reentrant}, the human brain \cite{rostami2018defects}, the
 heart tissue \cite{lebert2023reconstruction}, and the reaction of CO
 on platinum surfaces \cite{bhattacharya2019controlling}.  Collectively
-referred to as excitable media, these various systems have a similar
+referred to as excitable media, these systems have a similar
 reaction to an exciting stimulus when it exceeds a certain threshold,
 and then they do not respond to any additional stimulus for a specific
-duration of time. The BZ reaction is an example of a nonlinear dynamic
-system and has been studied extensively in chemical kinetics and
+duration of time. The BZ reaction has been studied extensively in chemical kinetics and
 nonlinear dynamics. The BZ reaction has been found to have several
 interesting applications in biological systems, chemical computing
 \cite{steinbock1996chemical}\cite{gruenert2013multi}, and
@@ -159,7 +161,7 @@ the counter signal becomes the frame rate of the camera. The patterns
 produced by the BZ reaction are difficult to detect because the
 reaction occurs in a semi-transparent solution. We solved this problem
 by illuminating a diffused white LED light source below the reaction
-medium. Patterns observed in the BZ reaction are lite blue, so the
+medium. Patterns observed in the BZ reaction are blue, so the
 camera is mounted with a blue dichroic filter to enhance the
 imaging. The patterns produced by the BZ reaction can be small and
 require high spatial-resolution imaging techniques to
@@ -220,11 +222,8 @@ each other with wires that represent the flow of data. Each block
 represents a specific operation, such as mathematical calculations,
 data acquisition, or signal processing.
 
-We developed a virtual interface that can generate voltage signals and
-capture the images of the patterns at the same time by using LabVIEW
-software. A multi-functional data acquisition device (NI USB DAQ 6343)
-creates voltage signals and triggers a Charge Coupled Device (CCD)
-camera simultaneously. With our virtual interface, a user can select
+We developed a LabVIEW based virtual interface that can generate voltage signals and
+capture the images of the patterns at the same time by using LabVIEW software. We use a multi-functional data acquisition device (NI USB DAQ 6343) to create voltage signals and to trigger a Charge Coupled Device (CCD) camera simultaneously. With our virtual interface, a user can select
 the camera, trigger parameters, amplitude, and frequency of the
 voltage signals with some mouse clicks. In the BZ experiments, we need
 to observe the spiral waves without an electric field and with an
@@ -330,9 +329,9 @@ In our experiment, frame rate is set as 2 fps.
     \label{fig:ex3}
 \end{figure}
 
-\todo[inline]{Write how camera is triggered}
+\todo[inline]{Write how camera is triggered} There are four counter-output channels in DAQ 6343. We use the channel "counter 0" to trigger the camera with a duty cycle =0.5.
 
-The corresponding block diagram is shown in Figure \ref{fig:ex4}. 
+The corresponding block diagram is shown in \ref{fig:ex4}. 
 The 'IMAQdx open camera' opens the camera. We use the
 ‘IMAQdx property node’ to select trigger parameters displayed on the
 front panel. Using ‘DAQmx create channel (CO
@@ -361,13 +360,14 @@ images in the mentioned folder with the specified file extension. The
 \subsubsection{DC Voltage Signal generation}
 \subsubsection{Electronic Circuit for voltage and current amplification}
 The NI USB DAQ 6343 generates a DC voltage with user-defined
-amplitude. The output from the non-inverting amplifier is fed to an
+amplitude ($\leq$15V). The output from the non-inverting amplifier is fed to an
 NPN power transistor (2N6487) capable of handling enough current
 inside the solution. The output from the power transistor is applied
 to the chemical solution. We can attain a maximum of + 15 V at the
 output using these electronic setups. The electric field, E, can be
 varied by using the relation: E= Applied Voltage/distance between
 electrodes
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{pulse circuit - Copy.jpg}
@@ -403,19 +403,20 @@ Figure \ref{fig:ex4} and Figure \ref{fig:ex5} show the block diagram
 for image acquisition and DC voltage generation. The block diagram is
 divided into Block I and Block II. Block I corresponds to part I, and
 block II corresponds to part II of the front panel. Each block is
-included in a sequence structure that helps execute the blocks
-sequentially. 
+included in a sequence structure that helps execute the blocks sequentially.
+ 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.3\linewidth,angle=90 ]{BLOCK1.png}
+    \includegraphics[width=1.3\linewidth,angle=90 ]{Block_1.png}
     \caption{Block diagram of the Image acquisition by triggering the
       camera. Block I captures and saves the images before the DC
       voltage generation.}
     \label{fig:ex4}
 \end{figure}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.3\linewidth,angle=90]{Block2.png}
+    \includegraphics[width=1.3\linewidth,angle=90]{Block_2.png}
     \caption{Block diagram of the image acquisition and DC voltage
       generation. Block II captures and saves the images after DC
       voltage generation.}
@@ -531,9 +532,7 @@ frequency.
     \label{fig:ex9}
 \end{figure}
 \section{Conclusions} 
-The BZ reaction exhibits complex dynamic patterns, including spiral
-waves, that can be studied and understood in a controlled laboratory
-setting. The BZ reaction is a model system for studying chemical and
+The BZ reaction is a model system for studying chemical and
 biological oscillations and provides a platform for exploring the
 underlying principles of self-organization and pattern
 formation. Spiral and scroll wave unpinning is widely studied in BZ
