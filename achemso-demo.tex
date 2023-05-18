@@ -222,22 +222,26 @@ each other with wires that represent the flow of data. Each block
 represents a specific operation, such as mathematical calculations,
 data acquisition, or signal processing.
 
-We developed a LabVIEW based virtual interface that can generate voltage signals and
-capture the images of the patterns at the same time by using LabVIEW software. We use a multi-functional data acquisition device (NI USB DAQ 6343) to create voltage signals and to trigger a Charge Coupled Device (CCD) camera simultaneously. With our virtual interface, a user can select
-the camera, trigger parameters, amplitude, and frequency of the
-voltage signals with some mouse clicks. In the BZ experiments, we need
-to observe the spiral waves without an electric field and with an
-electric field. So, we developed two scripts to capture the images
-before and after the field generation. Later, we combined those two
-scrips and made them run sequentially. We are able to make DC and
-polarised fields with two different codes.  There are other reported
-works that use image acquisition and electric field
-application. \cite{oddy2004method} Oddy et al. and colleagues have
-created a technique based on LabVIEW for measuring the electrophoretic
-mobility of fluorescently labeled particles that are submicrometer in
-size, as well as the electroosmotic mobility of a microchannel. They
-have established explicit expressions for the unknown electrophoretic
-and electroosmotic mobilities using particle displacements caused by
+We developed a LabVIEW based virtual interface that can generate
+voltage signals and capture the images of the patterns at the same
+time by using LabVIEW software.  We use a multi-functional data
+acquisition device (NI USB DAQ 6343) to create voltage signals and to
+trigger a Charge Coupled Device (CCD) camera simultaneously. With our
+virtual interface, a user can select the camera, trigger parameters,
+amplitude, and frequency of the voltage signals with some mouse
+clicks. In the BZ experiments, we need to observe the spiral waves
+without an electric field and with an electric field. So, we developed
+two scripts to capture the images before and after the field
+generation. Later, we combined those two scrips and made them run
+sequentially. We are able to make DC and polarised fields with two
+different codes.  There are other reported works that use image
+acquisition and electric field application. \cite{oddy2004method} Oddy
+et al. and colleagues have created a technique based on LabVIEW for
+measuring the electrophoretic mobility of fluorescently labeled
+particles that are submicrometer in size, as well as the
+electroosmotic mobility of a microchannel. They have established
+explicit expressions for the unknown electrophoretic and
+electroosmotic mobilities using particle displacements caused by
 applied direct current (DC) and alternating current (AC) electric
 fields. They capture images of the particle displacements using an
 epifluorescent microscope and a CCD camera.  The standard technique to
@@ -316,8 +320,9 @@ intuitive and easy to use, allowing users to adjust the required
 parameters, generate voltage signals, monitor wave dynamics, and save
 images to a computer for future analysis, all at the same time.
 The front panel of the LabVIEW program is shown in Figure
-\ref{fig:ex3}.
-The part 1 triggers camera and capture images at the desired frame rate.
+\ref{fig:ex3}. The front panel is
+divided into Part I and Part II. Part I is programmed to capture the
+images at the desired frame rate.
 In our experiment, frame rate is set as 2 fps. 
 \begin{figure}[H]
     \centering
@@ -328,33 +333,66 @@ In our experiment, frame rate is set as 2 fps.
       is for image acquisition after the DC voltage generation}
     \label{fig:ex3}
 \end{figure}
+The part I of the front panel contains following icons:
+\begin{itemize}
+  \item Counters: The image acquisition is controlled using a counter-output trigger
+from DAQ 6343. There are four counter-output channels in DAQ 6343. We
+use channel counter 0 to trigger the camera.
 
-\todo[inline]{Write how camera is triggered} There are four counter-output channels in DAQ 6343. We use the channel "counter 0" to trigger the camera with a duty cycle =0.5.
+ \item Camera: The cam1 displays the configured
+   camera
 
-The corresponding block diagram is shown in \ref{fig:ex4}. 
+   \item Trigger mode: This can be ON or OFF. The program captures the
+     images when the trigger mode is ON.  
+     \item Trigger activation: The trigger activates
+       when the counter signal is at its rising edge or falling edge. We have
+       chosen the trigger to activate the camera at its rising edge.
+       
+     \item trigger frequency: This sets the frame rate of the camera (2 fps).
+
+ \item duty cycle:  the duty cycle of the
+   counter trigger.
+
+ \item Acquired frames: the number of images captured per second.
+   \item Processed frames:  the number of images
+     processed per second.
+     \item Switch: allows us to start the DC field application.
+\end{itemize}
+
+     Part I will stop and part two of the program
+starts as soon as we press a Boolean switch displayed on the front
+panel. Part II is programmed to capture the images and generate a DC
+voltage signal. We use the channeli analog output 0 (AO 0) of the DAQ
+to generate the voltage. The amplitude of the voltage signal can be
+varied using the numeric control button. The waveform chart shows the
+generated DC voltage at the output.
+
+The block diagram corresponding to this front panel is shown in \ref{fig:ex4}. 
+The following modules from the LAbView library are used:
+
 The 'IMAQdx open camera' opens the camera. We use the
-‘IMAQdx property node’ to select trigger parameters displayed on the
-front panel. Using ‘DAQmx create channel (CO
-Pulse-generation-Frequency) VI,’ we can choose the Counter channel,
-frequency, and duty cycle of the trigger. The ‘DAQmx Start Task VI’
-starts the signal generation task.  The ‘DAQmx is task done VI’ on the
+IMAQdx property node to select trigger parameters displayed on the
+front panel. Using DAQmx create channel (CO
+Pulse-generation-Frequency) VI, we can choose the Counter channel,
+frequency, and duty cycle of the trigger. The DAQmx Start Task VI
+starts the signal generation task.  The DAQmx is task done VI on the
 while loop checks whether the signal generation task is completed or
-not in each iteration. The ‘DAQmx configure Grab VI’ configures and
-starts the grab acquisition. The ‘IMAQdx Grab VI’ captures the current
-image and then passes the images to ‘IMAQ Cast image VI’ to convert
+not in each iteration. The DAQmx configure Grab VI configures and
+starts the grab acquisition. The IMAQdx Grab VI captures the current
+image and then passes the images to IMAQ Cast image VI to convert
 these RGB frames to grayscale since this reduces the data size. Each
 image from IMAQ Caste Image VI needs to be written and stored in a
-folder inside the computer to collect raw image data. The ‘IMAQ write
-file2 VI’ writes the image to a file in the selected format
+folder inside the computer to collect raw image data. The IMAQ write
+file2 VI writes the image to a file in the selected format
 (png/jpg/bmp/tiff etc.). The iteration terminal of the while loop
 gives the sequential names for images. Each iteration number is
 converted to a string and concatenated with the file extension and
-folder path where we need to store images. The ‘String to Path
-function’ converts these concatenated strings to a path and is
-connected to the “file path” terminal of the 'IMAQ Write file 2
+folder path where we need to store images. The String to Path
+function converts these concatenated strings to a path and is
+connected to the file path terminal of the 'IMAQ Write file 2
 VI'. This connection commands the 'IMAQ Write file 2 VI' to store the
 images in the mentioned folder with the specified file extension. The
-‘While loop’ helps to run the code continuously.
+While loop helps to run the code continuously.
 
 
 \subsubsection{DC Voltage Signal generation}
@@ -377,27 +415,7 @@ electrodes
 \end{figure}
 
 
-The image acquisition is controlled using a counter-output trigger
-from DAQ 6343. There are four counter-output channels in DAQ 6343. We
-use channel ‘counter 0’ to trigger the camera. The front panel is
-divided into Part I and Part II. Part I is programmed to capture the
-images with no applied voltage. The “cam1” displays the configured
-camera, and the counter option displays the selected counter output
-channel. The program captures the images when the trigger mode is ON,
-and the trigger activates when the counter signal is at its rising
-edge/falling edge. The trigger frequency decides the frame rate of the
-camera.
 
-The duty cycle on the front panel displays the duty cycle of the
-counter trigger. The front panel also displays the captured images,
-the number of images captured per second, and the number of images
-processed per second. Part I will stop and part two of the program
-starts as soon as we press a Boolean switch displayed on the front
-panel. Part II is programmed to capture the images and generate a DC
-voltage signal. We use the channel ‘analog output 0 (AO 0)’ of the DAQ
-to generate the voltage. The amplitude of the voltage signal can be
-varied using the numeric control button. The waveform chart shows the
-generated DC voltage at the output.
 \subsubsection{Block diagram}
 Figure \ref{fig:ex4} and Figure \ref{fig:ex5} show the block diagram
 for image acquisition and DC voltage generation. The block diagram is
@@ -515,22 +533,6 @@ circularly polarised, and elliptically polarised) if we apply these
 signals to the chemical solution in four electrode combinations by
 changing the phase of the signals by keeping the same amplitude and
 frequency.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.3\textwidth,angle=90]{BLOCK1.png}
-    \caption{Block diagram of the Image acquisition by triggering the
-      camera. Block I captures and saves the images before the AC
-      voltage generation.}
-    \label{fig:ex8}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.3\linewidth, angle=90]{cpef_block2.png}
-    \caption{Block diagram of the image acquisition and a pair of AC
-      voltage generation. Block II captures and saves the images after
-      AC voltage generation}
-    \label{fig:ex9}
-\end{figure}
 \section{Conclusions} 
 The BZ reaction is a model system for studying chemical and
 biological oscillations and provides a platform for exploring the
