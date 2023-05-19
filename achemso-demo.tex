@@ -285,7 +285,7 @@ and the transmitted light is detected with a CCD camera
 a camera stand. The camera is mounted with a blue dichroic filter
 (BP470-27) to increase the contrast between the pattern and the
 unexcited medium.  LabVIEW software controls the image acquisition and
-voltage signals for unpinning. Figure \ref{fig:ex1} shows a schematic
+voltage signals for unpinning. \ref{fig:ex1} shows a schematic
 diagram of the experimental setup for polarised field application.
 \begin{figure}[H]
     \centering
@@ -326,14 +326,14 @@ images at the desired frame rate.
 In our experiment, frame rate is set as 2 fps. 
 \begin{figure}[H]
     \centering
-\includegraphics[width=\linewidth,height=0.6\linewidth]{Dc_frntpnl - Copy.png}
+\includegraphics[width=\linewidth]{Dc_frntpnl.png}
     \caption{The front panel of the LabVIEW program for image capture
       and DC voltage generation. Part I of the front panel is for
       image acquisition before the DC voltage generation and part II
       is for image acquisition after the DC voltage generation}
     \label{fig:ex3}
 \end{figure}
-The part I of the front panel contains following icons:
+The front panel contains following icons:
 \begin{itemize}
   \item Counters: The image acquisition is controlled using a counter-output trigger
 from DAQ 6343. There are four counter-output channels in DAQ 6343. We
@@ -352,47 +352,50 @@ use channel counter 0 to trigger the camera.
 
  \item duty cycle:  the duty cycle of the
    counter trigger.
-
  \item Acquired frames: the number of images captured per second.
    \item Processed frames:  the number of images
      processed per second.
      \item Switch: allows us to start the DC field application.
+     \item Image display: Displays the most recently captured image.
+     \item Amplitude: Amplitude of the DC voltage at DAQ ouput can be varied using this numeric control button.
+     \item waveform chart: Displays the generated DC voltage at the DAQ output.
 \end{itemize}
 
-     Part I will stop and part two of the program
-starts as soon as we press a Boolean switch displayed on the front
-panel. Part II is programmed to capture the images and generate a DC
-voltage signal. We use the channeli analog output 0 (AO 0) of the DAQ
-to generate the voltage. The amplitude of the voltage signal can be
-varied using the numeric control button. The waveform chart shows the
-generated DC voltage at the output.
+Part I will stop and part two of the program starts as soon as we press a Boolean switch displayed on the front panel. Part II is programmed to capture the images and generate a DC voltage signal. We use the channel 'analog output 0' (AO 0) of the DAQ to generate the voltage. 
 
-The block diagram corresponding to this front panel is shown in \ref{fig:ex4}. 
-The following modules from the LAbView library are used:
+The block diagram corresponding to this front panel is shown in \ref{fig:ex4} \ref{fig:ex5}. The block diagram is divided into Block I and Block II. Block I corresponds to part I, and block II corresponds to part II of the front panel. Each block is included in a sequence structure that helps execute the blocks sequentially. 
+The following modules from the LabVIEW library are used:
+\begin{itemize}
+	\item IMAQdx open camera VI : This VI opens the camera, checking its capabilities, loading the camera configuration file, and creating a distinct reference to the camera. 
+	\item IMAQdx property node: We use this node to select trigger parameters displayed on the front panel.
+	\item DAQmx create channel (CO Pulse-generation-Frequency) VI : Using this VI, we can choose the Counter channel, frequency, and duty cycle of the trigger.
+	\item The DAQmx Start Task VI : Starts the signal generation task.
+	\item DAQmx is task done VI: This VI  on the while loop checks whether the signal generation task is completed in each iteration.
+	\item The DAQmx configure Grab VI: Configures and starts the grab acquisition.
+	\item IMAQdx Grab VI : Captures the images and then passes the images to IMAQ Cast image VI.
+	\item IMAQ Cast image VI : convert these RGB frames to grayscale since this reduces the data size.
+	\item The IMAQ write file2 VI : Writes the images from IMAQ Caste Image VI to a file in the selected format (png/jpg/bmp/tiff etc.) 
+\end{itemize}
+Each image from IMAQ Caste Image VI needs to be written and stored in a folder inside the computer to collect raw image data.  The iteration terminal of the while loop gives the sequential names for images. Each iteration number is converted to a string and concatenated with the file extension and folder path where we need to store images. The String to Path function converts these concatenated strings to a path and is connected to the file path terminal of the 'IMAQ Write file 2 VI'. This connection commands the 'IMAQ Write file 2 VI' to store the images in the mentioned folder with the specified file extension. The While loop helps to run the code continuously. Block II executes as soon as we press the Boolean switch on the front panel. When the ‘switch’ is ON, the case selector terminal of both
+‘case structures’ on the block diagram changes to TRUE and corresponding codes execute simultaneously. Code in ‘case structure I’ is for signal generation, and code in case structure II is for image acquisition. "DAQ Assistant Express VI' on the ‘case structure I’
+generate a DC Voltage at the Analog output 0 (AO 0). Image acquisition code on 'case structure II' is the same as in block I, but images will be stored in a different folder, and it will stop in the presence of an error or manually pressing a Boolean stop button.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.3\linewidth,angle=90 ]{Block_1.png}
+	\caption{Block diagram of the Image acquisition by triggering the
+		camera. Block I captures and saves the images before the DC
+		voltage generation.}
+	\label{fig:ex4}
+\end{figure}
 
-The 'IMAQdx open camera' opens the camera. We use the
-IMAQdx property node to select trigger parameters displayed on the
-front panel. Using DAQmx create channel (CO
-Pulse-generation-Frequency) VI, we can choose the Counter channel,
-frequency, and duty cycle of the trigger. The DAQmx Start Task VI
-starts the signal generation task.  The DAQmx is task done VI on the
-while loop checks whether the signal generation task is completed or
-not in each iteration. The DAQmx configure Grab VI configures and
-starts the grab acquisition. The IMAQdx Grab VI captures the current
-image and then passes the images to IMAQ Cast image VI to convert
-these RGB frames to grayscale since this reduces the data size. Each
-image from IMAQ Caste Image VI needs to be written and stored in a
-folder inside the computer to collect raw image data. The IMAQ write
-file2 VI writes the image to a file in the selected format
-(png/jpg/bmp/tiff etc.). The iteration terminal of the while loop
-gives the sequential names for images. Each iteration number is
-converted to a string and concatenated with the file extension and
-folder path where we need to store images. The String to Path
-function converts these concatenated strings to a path and is
-connected to the file path terminal of the 'IMAQ Write file 2
-VI'. This connection commands the 'IMAQ Write file 2 VI' to store the
-images in the mentioned folder with the specified file extension. The
-While loop helps to run the code continuously.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.3\linewidth,angle=90]{Block_2.png}
+	\caption{Block diagram of the image acquisition and DC voltage
+		generation. Block II captures and saves the images after DC
+		voltage generation.}
+	\label{fig:ex5}
+\end{figure}
 
 
 \subsubsection{DC Voltage Signal generation}
@@ -417,39 +420,9 @@ electrodes
 
 
 \subsubsection{Block diagram}
-Figure \ref{fig:ex4} and Figure \ref{fig:ex5} show the block diagram
-for image acquisition and DC voltage generation. The block diagram is
-divided into Block I and Block II. Block I corresponds to part I, and
-block II corresponds to part II of the front panel. Each block is
-included in a sequence structure that helps execute the blocks sequentially.
+%Figure \ref{fig:ex4} and Figure \ref{fig:ex5} show the block diagram for image acquisition and DC voltage generation. The block diagram isdivided into Block I and Block II. Block I corresponds to part I, and block II corresponds to part II of the front panel. Each block isincluded in a sequence structure that helps execute the blocks sequentially.
  
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.3\linewidth,angle=90 ]{Block_1.png}
-    \caption{Block diagram of the Image acquisition by triggering the
-      camera. Block I captures and saves the images before the DC
-      voltage generation.}
-    \label{fig:ex4}
-\end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.3\linewidth,angle=90]{Block_2.png}
-    \caption{Block diagram of the image acquisition and DC voltage
-      generation. Block II captures and saves the images after DC
-      voltage generation.}
-    \label{fig:ex5}
-\end{figure}
-Block II executes as soon as we press the Boolean switch on the front
-panel. When the ‘switch’ is ON, the case selector terminal of both
-‘case structures’ on the block diagram changes to TRUE and
-corresponding codes execute simultaneously. Code in ‘case structure I’
-is for signal generation, and code in case structure II is for image
-acquisition. "DAQ Assistant Express VI' on the ‘case structure I’
-generate a DC Voltage at the Analog output 0 (AO 0). Image acquisition
-code on 'case structure II' is the same as in block I, but images will
-be stored in a different folder, and it will stop in the presence of
-an error or manually pressing a Boolean stop button.
 \subsection{AC Voltage signal Generation}
 \subsubsection{Electronic circuit for voltage and current amplification}
 To apply a polarised field, we generate two identical AC signals with
@@ -488,7 +461,7 @@ be varied by using the corresponding numeric control buttons. The
 waveform chart displays the generated voltage signals at the output.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth,height=0.6\linewidth]{polarised - Copy.png}
+    \includegraphics[width=\linewidth]{polarised.png}
     \caption{The front panel of the LabVIEW program for the image
       acquisition and a pair of AC voltage generation. Part I of the
       front panel is for image acquisition before the AC voltage
