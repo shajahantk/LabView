@@ -12,7 +12,7 @@
 %% extensions are not currently available on the ACS conversion
 %% servers.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
+%\usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
 \usepackage{todonotes}
 \mciteErrorOnUnknownfalse
 \usepackage{babel}
@@ -277,41 +277,40 @@ acquisition unit interfaces a CCD camera with any personal computer.
 Hence, our work has wide applications for low-energy electric field
 experiments as well as image acquisition.
 \section{Methods and Instrumentation}
-\subsection{Experimental methods}
-To monitor the motions of chemical waves, the experimental system is
-illuminated with a diffused white light (Flat LED source) from below,
-and the transmitted light is detected with a CCD camera
-(mvBLUECOUGAR-X120bc). A tripod (Vanguard Espod CX 203AGH) is used as
-a camera stand. The camera is mounted with a blue dichroic filter
-(BP470-27) to increase the contrast between the pattern and the
-unexcited medium.  LabVIEW software controls the image acquisition and
-voltage signals for unpinning. \ref{fig:ex1} shows a schematic
-diagram of the experimental setup for polarised field application.
+\subsection{Experimental setup}
+A schematic diagram of our experimental setup is shown in figure~\ref{fig:ex1}.
+The chemical reaagents are in a glass petri-dish of diamter ???~cm.
+The dynamics of chemical waves in this petri-dish is imaged using a CCD camera from above (mvBLUECOUGAR-X120bc). 
+The petri-dish is illuminated with a diffused white light (Flat LED source) from below. Since the chemical waves have blue wavefronts aginst red background, we have used a  blue dichroic filter
+(BP470-27) on the camera to increase the image contrast.
+The chemical wave is controlled by either DC or polarised electric fields via specially mounted copper electrodes arranged as shown in the figure~\ref{fig:ex1} .
+The image capture by CCD camera and the application of electric field is controlled by a DAQ device (DAQ 6343 from National Instruments) with custom written LabVIEW software as described below.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{experiment_setup_01.png}
-    \caption{The experimental setup for the polarised filed
-      application. Voltage signals from DAQ 6343 are amplified and
-      applied to the chemical solution through the cross-arrangement
-      of four copper electrodes. }
+    \caption{The schematic diagram experimental setup.
+      The dynamics of the chemical waves in the petridish is imaged using a CCD camera.
+      Electric field is applied to control the chemical reaction through the cross-arrangement
+      of four copper electrodes.
+      A DAQ device controls the camera and electric field.}
     \label{fig:ex1}
 \end{figure}
-To generate voltage signals, we use NI DAQ 6343, also controlled by
-LabVIEW software.  We use two copper electrodes for the DC field and a
+
+  We use two copper electrodes for the DC field and a
 cross arrangement of four copper electrodes for polarised field
 applications. The DAQ can supply a maximum of 20 mA current at the
-output. But, the current passing through the solution is more than 20
-mA. So, we use electronic circuits designed for current
-amplification. An external power supply (LQ 6324T) is used as the
-power source for the electronic circuit. The DAQ can generate a signal
+output. But, the current passing through the solution is of the order of 1 A.
+Also the DAQ can generate a signal
 with a maximum of $\pm$ 10 V amplitude. Hence the generated signals
-should be amplified with appropriate gain. Hence, a non-inverting
-amplifier amplifies the output from the DAQ. We require a voltage and
-current amplifier circuit for the DC field and the polarised field,
-two such circuits with slight modifications.
+should be amplified with appropriate gain.
+Thus the output from the  DAQ is ampliefied using a non-inverting
+voltage amplifier with gain 3,
+which is then fed through a power transisitor (2N6487) to amplify current.
+The circuit for the amplifier for DC signal is shown in figure~{???}.
+
 %\section{Instrumentation}
 %\subsection{Experimental methods}
-\section{Results and discussion}
+\section{Description of the LabVIEW program}
 We developed two LabVIEW programs to generate both DC and AC
 fields. These programs were used to investigate the mechanism of
 spiral wave unpinning in the BZ reaction with both DC and polarized
