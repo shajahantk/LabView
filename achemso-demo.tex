@@ -193,12 +193,8 @@ constant current sources and programmable power supplies. The
 experimental system requires multiple devices to function together.
 Virtual instrumentation can effectively control such tasks. Virtual
 instrumentation refers to the use of software and computer technology
-to create and control virtual versions of physical instruments. These
-virtual instruments can be used for various purposes, such as
-scientific research, engineering design, and industrial automation.
-Virtual instrumentation is a growing field and is increasingly used in
-various industries, including telecommunications, aerospace, and
-manufacturing.
+to create and control virtual versions of physical instruments. 
+These virtual instruments can be used for various purposes, such as scientific research, engineering design, and industrial automation. Virtual instrumentation is a growing field and is increasingly used in various industries, including telecommunications, aerospace, and manufacturing.
 
 LabVIEW (Laboratory Virtual Instrument Engineering Workbench) is a
 graphical programming platform widely used for virtual
@@ -279,15 +275,14 @@ experiments as well as image acquisition.
 \section{Methods and Instrumentation}
 \subsection{Experimental setup}
 A schematic diagram of our experimental setup is shown in figure~\ref{fig:ex1}.
-The chemical reaagents are in a glass petri-dish of diamter ???~cm.
-The dynamics of chemical waves in this petri-dish is imaged using a CCD camera from above (mvBLUECOUGAR-X120bc). 
+The chemical reagents are in a glass petri-dish of diameter 9 cm.
+The dynamics of chemical waves in this petri-dish is imaged using a CCD camera (mvBLUECOUGAR-X120bc) from above. 
 The petri-dish is illuminated with a diffused white light (Flat LED source) from below. Since the chemical waves have blue wavefronts aginst red background, we have used a  blue dichroic filter
 (BP470-27) on the camera to increase the image contrast.
-The chemical wave is controlled by either DC or polarised electric fields via specially mounted copper electrodes arranged as shown in the figure~\ref{fig:ex1} .
-The image capture by CCD camera and the application of electric field is controlled by a DAQ device (DAQ 6343 from National Instruments) with custom written LabVIEW software as described below.
+The chemical wave is controlled by either DC or polarised electric fields via specially mounted copper electrodes arranged as shown in the figure~\ref{fig:ex1}. The image capture by CCD camera and the application of electric field is controlled by a DAQ device (DAQ 6343 from National Instruments) with custom written LabVIEW software.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{experiment_setup_01.png}
+    \includegraphics[width=\linewidth]{expmt_new.png}
     \caption{The schematic diagram experimental setup.
       The dynamics of the chemical waves in the petridish is imaged using a CCD camera.
       Electric field is applied to control the chemical reaction through the cross-arrangement
@@ -296,21 +291,48 @@ The image capture by CCD camera and the application of electric field is control
     \label{fig:ex1}
 \end{figure}
 
-  We use two copper electrodes for the DC field and a
+We use two copper electrodes for the DC field and a
 cross arrangement of four copper electrodes for polarised field
 applications. The DAQ can supply a maximum of 20 mA current at the
 output. But, the current passing through the solution is of the order of 1 A.
-Also the DAQ can generate a signal
-with a maximum of $\pm$ 10 V amplitude. Hence the generated signals
-should be amplified with appropriate gain.
-Thus the output from the  DAQ is ampliefied using a non-inverting
-voltage amplifier with gain 3,
+Also the DAQ generates a signal with a maximum of $\pm$ 10 V amplitude. Hence the generated signals should be amplified with appropriate gain. Thus the output from the  DAQ is ampliefied using a non-inverting voltage amplifier with gain 3,
 which is then fed through a power transisitor (2N6487) to amplify current.
-The circuit for the amplifier for DC signal is shown in figure~{???}.
+The circuit for the amplifier for DC signal is shown in figure~{\ref{fig:ex2}}. The electric field, E, can be varied by using the relation: E= Applied Voltage/distance between electrodes.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{pulse circuit - Copy.jpg}
+	\caption{Shows the voltage and current amplifier circuit for DC
+		voltage application in the BZ reaction}
+	\label{fig:ex2}
+\end{figure}
+
+To apply a polarised field, we generate two identical AC signals with
+a specific phase difference. An electronic circuit is designed with a
+push-pull amplifier setup to handle both half cycles of an AC signal.
+It includes two matching transistors, one being an NPN-type and the
+other a PNP-type. Both power transistors receive the same input
+signals equal in magnitude but opposite in phase. This results in one
+transistor only amplifying the positive half of the input waveform
+cycle while the other amplifies the negative half. The resulting two
+halves combine at the output terminal. An error amplifier is also
+included to compensate for the input signal fluctuations when we deal
+with low-frequency signals. This error amplifier always tries to make
+the input and output the same. Identical circuits are required for
+each sine wave signal. Signals are applied onto the solution through
+copper electrodes as shown in figure~\ref{fig:ex6}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{CPEF - Copy.jpg}
+	\caption{Depicts the voltage and current amplifier circuit for a
+		pair of AC voltage signal applications in the BZ reaction.}
+	\label{fig:ex6}
+\end{figure}
 
 %\section{Instrumentation}
 %\subsection{Experimental methods}
 \section{Description of the LabVIEW program}
+
 We developed two LabVIEW programs to generate both DC and AC
 fields. These programs were used to investigate the mechanism of
 spiral wave unpinning in the BZ reaction with both DC and polarized
@@ -318,25 +340,19 @@ fields.  Our virtual platform is designed to be
 intuitive and easy to use, allowing users to adjust the required
 parameters, generate voltage signals, monitor wave dynamics, and save
 images to a computer for future analysis, all at the same time.
-The front panel of the LabVIEW program is shown in Figure
-\ref{fig:ex3}. The front panel is
-divided into Part I and Part II. Part I is programmed to capture the
-images at the desired frame rate.
-In our experiment, frame rate is set as 2 fps. 
+\subsection{Program to capture images and apply DC voltage}
+The front panel of the LabVIEW program is shown in  figure~\ref{fig:ex3}. The front panel is divided into Part I and Part II. Part I is programmed to capture the images at the desired frame rate. In our experiment, frame rate is set as 2 fps. 
 \begin{figure}[H]
     \centering
-\includegraphics[width=\linewidth]{Dc_frntpnl.png}
-    \caption{The front panel of the LabVIEW program for image capture
-      and DC voltage generation. Part I of the front panel is for
-      image acquisition before the DC voltage generation and part II
-      is for image acquisition after the DC voltage generation}
+    \includegraphics[width=\linewidth]{Dc_frntpnl.png}
+    \caption{The front panel of the LabVIEW program for image capture and DC voltage generation. Part I of the front panel is for image acquisition before the DC voltage generation and part II is for image acquisition after the DC voltage generation}
     \label{fig:ex3}
 \end{figure}
+
 The front panel contains following icons:
 \begin{itemize}
   \item Counters: The image acquisition is controlled using a counter-output trigger
-from DAQ 6343. There are four counter-output channels in DAQ 6343. We
-use channel counter 0 to trigger the camera.
+from DAQ 6343. There are four counter-output channels in DAQ 6343. We use channel counter 0 to trigger the camera.
 
  \item Camera: The cam1 displays the configured
    camera
@@ -360,8 +376,7 @@ use channel counter 0 to trigger the camera.
      \item waveform chart: Displays the generated DC voltage at the DAQ output.
 \end{itemize}
 
-Part I will stop and part II of the program starts as soon as we press a Boolean switch displayed on the front panel. Part II is programmed to capture the images and generate a DC voltage signal. We use the channel 'analog output 0' (AO 0) of the DAQ to generate the voltage. 
-The block diagram corresponding to this front panel is shown in \ref{fig:ex4} (block I) and \ref{fig:ex5} (block II). 
+Part I will stop and part II of the program starts as soon as we press a Boolean switch displayed on the front panel. Part II is programmed to capture the images and generate a DC voltage signal. We use the channel 'analog output 0' (AO 0) of the DAQ to generate the voltage. The block diagram corresponding to this front panel is shown in figure~\ref{fig:ex4} (block I) and figure~\ref{fig:ex5} (block II). 
 %The block diagram is divided into Block I and Block II. Block I corresponds to part I, and block II corresponds to part II of the front panel. 
 Each block is included in a sequence structure that helps to execute the blocks sequentially.
  
@@ -387,69 +402,24 @@ The following modules from the LabVIEW library are used:
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.3\linewidth,angle=90 ]{Block_1.png}
-	\caption{Block diagram of the Image acquisition by triggering the
-		camera. Block I captures and saves the images before the DC
-		voltage generation.}
+	\caption{The block diagram (block I) of the LabVIEW program for the image acquisition before the DC voltage generation.}
 	\label{fig:ex4}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.3\linewidth,angle=90]{Block_2.png}
-	\caption{Block diagram of the image acquisition and DC voltage
-		generation. Block II captures and saves the images after DC
-		voltage generation.}
+	\caption{The block diagram (block II) of the LabVIEW program for the image acquisition after DC voltage generation.}
 	\label{fig:ex5}
 \end{figure}
 
-
-\subsubsection{DC Voltage Signal generation}
-\subsubsection{Electronic Circuit for voltage and current amplification}
-The NI USB DAQ 6343 generates a DC voltage with user-defined amplitude ($\leq$15V). The output from the non-inverting amplifier is fed to an NPN power transistor (2N6487) capable of handling current (1A) inside the solution. The output from the power transistor is applied to the chemical solution. We can attain a maximum of + 15 V at the output using these electronic setups. The electric field, E, can be varied by using the relation: E= Applied Voltage/distance between electrodes.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{pulse circuit - Copy.jpg}
-    \caption{Shows the voltage and current amplifier circuit for DC
-      voltage application in the BZ reaction}
-    \label{fig:ex2}
-\end{figure}
-
-
-
-\subsubsection{Block diagram}
+%\subsubsection{Block diagram}
 %Figure \ref{fig:ex4} and Figure \ref{fig:ex5} show the block diagram for image acquisition and DC voltage generation. The block diagram isdivided into Block I and Block II. Block I corresponds to part I, and block II corresponds to part II of the front panel. Each block isincluded in a sequence structure that helps execute the blocks sequentially.
  
+\subsubsection{Program to capture images and apply AC voltage signals}
 
-\subsection{AC Voltage signal Generation}
-\subsubsection{Electronic circuit for voltage and current amplification}
-To apply a polarised field, we generate two identical AC signals with
-a specific phase difference. An electronic circuit is designed with a
-push-pull amplifier setup to handle both half cycles of an AC signal.
-It includes two matching transistors, one being an NPN-type and the
-other a PNP-type. Both power transistors receive the same input
-signals equal in magnitude but opposite in phase. This results in one
-transistor only amplifying the positive half of the input waveform
-cycle while the other amplifies the negative half. The resulting two
-halves combine at the output terminal. An error amplifier is also
-included to compensate for the input signal fluctuations when we deal
-with low-frequency signals. This error amplifier always tries to make
-the input and output the same. Identical circuits are required for
-each sine wave signal. Signals are applied onto the solution through
-copper electrodes as shown in \ref{fig:ex6}.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{CPEF - Copy.jpg}
-    \caption{Depicts the voltage and current amplifier circuit for a
-      pair of AC voltage signal applications in the BZ reaction.}
-    \label{fig:ex6}
-\end{figure}
-%\subsubsection{Front Panel}
-The front panel is divided into part I and part II. Part I is
-programmed to capture the images with no applied voltage.  Part II is
-programmed to capture the images and generate two AC voltage signals
-(sine wave or cosine wave). Both parts are the same, as explained
-earlier, except for voltage signal generation. 
+The front panel is divided into part I and part II. Part I is same as we explained as in figure~\ref{fig:ex3}. Part II is programmed to capture the images and generate two AC voltage signals (sine wave or cosine wave). 
+%Both parts are the same, as explained earlier, except for voltage signal generation. 
 
 The front panel contains following new icons:
 \begin{itemize}
@@ -472,7 +442,7 @@ The front panel contains following new icons:
     \label{fig:ex7}
 \end{figure}
 %\subsubsection{Block Diagram}
-The corresponding block diagram is divided into BLOCK I and Block II. Block I is same as we explained as in \ref{fig:ex4}.  \ref{fig:ex9} show the block diagram (BLOCK II) for image acquisition and two AC voltage generation.  Each block is included in a
+The corresponding block diagram is divided into BLOCK I and Block II. Block I is same as we explained as in figure~\ref{fig:ex4}.  figure~\ref{fig:ex9} show the block diagram (BLOCK II) for image acquisition and two AC voltage generation.  Each block is included in a
 sequence structure that helps to execute the blocks sequentially. Block II executes as
 soon as we press the Boolean switch on the front panel. When the
 ‘switch’ is ON, the case selector terminal of both ‘case structures’
@@ -499,8 +469,7 @@ circularly polarised, and elliptically polarised) if we apply these signals to t
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth, angle=90]{polarised_block_2.png}
-	\caption{Block diagram of the image acquisition and a pair of AC voltage generation. Block II
-		captures and saves the images after AC voltage generation}
+	\caption{The block diagram (block II) of the LabVIEW program for the image acquisition after a pair of AC voltage generation.}
 	\label{fig:ex9}
 \end{figure}
 \section{Conclusions} 
